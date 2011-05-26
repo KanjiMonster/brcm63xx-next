@@ -1,0 +1,32 @@
+menuconfig B53
+	tristate "Broadcom bcm53xx managed switch support"
+	depends on SWCONFIG
+	default	y if BCM47XX || BCM63XX
+	help
+	  Select Y to to enable support for Broadcom bcm53xx managed switch chips.
+
+if B53
+
+config B53_SPI_DRIVER
+	bool "Enable support for SPI connected switches"
+	default y if BCM63XX
+
+config B53_PHY_DRIVER
+	bool "Enable support for MDIO connected switches"
+	default	y if BCM47XX || BCM63XX
+
+config B53_FE
+	bool "Enable support for fast ethernet switch chips"
+	default y
+	---help---
+	  Select Y to enable support for Broadcom Fast Ethernet managed switch
+	  chips (BCM5325E, BCM5325F).
+
+config B53_GE
+	bool "Enable support for gigabit ethernet switch chips"
+	default y
+	---help---
+	  Select Y to enable support for Broadcom Gigabit Ethernet managed switch
+	  chips (BCM539X, BCM53115, BCM53125).
+
+endif
