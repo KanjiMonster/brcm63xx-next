@@ -90,34 +90,34 @@
 +}
 --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
 +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
-@@ -127,7 +127,7 @@ enum bcm63xx_regs_set {
- #define BCM_6338_UART1_BASE		(0xdeadbeef)
+@@ -163,7 +163,7 @@ enum bcm63xx_regs_set {
  #define BCM_6338_GPIO_BASE		(0xfffe0400)
  #define BCM_6338_SPI_BASE		(0xfffe0c00)
+ #define BCM_6338_SPI2_BASE		(0xdeadbeef)
 -#define BCM_6338_UDC0_BASE		(0xdeadbeef)
 +#define BCM_6338_UDC0_BASE		(0xfffe3000)
  #define BCM_6338_USBDMA_BASE		(0xfffe2400)
  #define BCM_6338_OHCI0_BASE		(0xdeadbeef)
  #define BCM_6338_OHCI_PRIV_BASE		(0xfffe3000)
-@@ -158,7 +158,7 @@ enum bcm63xx_regs_set {
- #define BCM_6345_UART1_BASE		(0xdeadbeef)
+@@ -208,7 +208,7 @@ enum bcm63xx_regs_set {
  #define BCM_6345_GPIO_BASE		(0xfffe0400)
  #define BCM_6345_SPI_BASE		(0xdeadbeef)
+ #define BCM_6345_SPI2_BASE		(0xdeadbeef)
 -#define BCM_6345_UDC0_BASE		(0xdeadbeef)
 +#define BCM_6345_UDC0_BASE		(0xfffe2100)
  #define BCM_6345_USBDMA_BASE		(0xfffe2800)
  #define BCM_6345_ENET0_BASE		(0xfffe1800)
  #define BCM_6345_ENETDMA_BASE		(0xfffe2800)
-@@ -215,7 +215,7 @@ enum bcm63xx_regs_set {
- #define BCM_6358_UART1_BASE		(0xfffe0120)
+@@ -293,7 +293,7 @@ enum bcm63xx_regs_set {
  #define BCM_6358_GPIO_BASE		(0xfffe0080)
  #define BCM_6358_SPI_BASE		(0xdeadbeef)
+ #define BCM_6358_SPI2_BASE		(0xfffe0800)
 -#define BCM_6358_UDC0_BASE		(0xfffe0800)
 +#define BCM_6358_UDC0_BASE		(0xfffe0400)
  #define BCM_6358_OHCI0_BASE		(0xfffe1400)
  #define BCM_6358_OHCI_PRIV_BASE		(0xdeadbeef)
  #define BCM_6358_USBH_PRIV_BASE		(0xfffe1500)
-@@ -444,6 +444,7 @@ enum bcm63xx_irq {
+@@ -483,6 +483,7 @@ enum bcm63xx_irq {
  	IRQ_UART0,
  	IRQ_UART1,
  	IRQ_DSL,
@@ -125,22 +125,29 @@
  	IRQ_ENET0,
  	IRQ_ENET1,
  	IRQ_ENET_PHY,
-@@ -486,7 +487,7 @@ enum bcm63xx_irq {
+@@ -514,6 +515,7 @@ enum bcm63xx_irq {
+ #define BCM_6338_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
+ #define BCM_6338_UART1_IRQ		0
+ #define BCM_6338_DSL_IRQ		(IRQ_INTERNAL_BASE + 5)
++#define BCM_6338_UDC0_IRQ		0
+ #define BCM_6338_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
+ #define BCM_6338_ENET1_IRQ		0
+ #define BCM_6338_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 9)
+@@ -544,6 +546,7 @@ enum bcm63xx_irq {
  #define BCM_6345_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
+ #define BCM_6345_UART1_IRQ		0
  #define BCM_6345_DSL_IRQ		(IRQ_INTERNAL_BASE + 3)
- #define BCM_6345_ATM_IRQ		(IRQ_INTERNAL_BASE + 4)
--#define BCM_6345_USB_IRQ		(IRQ_INTERNAL_BASE + 5)
 +#define BCM_6345_UDC0_IRQ		(IRQ_INTERNAL_BASE + 5)
  #define BCM_6345_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
+ #define BCM_6345_ENET1_IRQ		0
  #define BCM_6345_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 12)
- #define BCM_6345_ENET0_RXDMA_IRQ	(IRQ_INTERNAL_BASE + 13 + 1)
-@@ -508,10 +509,17 @@ enum bcm63xx_irq {
- #define BCM_6348_TIMER_IRQ		(IRQ_INTERNAL_BASE + 0)
+@@ -574,10 +577,17 @@ enum bcm63xx_irq {
  #define BCM_6348_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
+ #define BCM_6348_UART1_IRQ		0
  #define BCM_6348_DSL_IRQ		(IRQ_INTERNAL_BASE + 4)
 +#define BCM_6348_UDC0_IRQ		(IRQ_INTERNAL_BASE + 6)
- #define BCM_6348_ENET1_IRQ		(IRQ_INTERNAL_BASE + 7)
  #define BCM_6348_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
+ #define BCM_6348_ENET1_IRQ		(IRQ_INTERNAL_BASE + 7)
  #define BCM_6348_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 9)
  #define BCM_6348_OHCI0_IRQ		(IRQ_INTERNAL_BASE + 12)
 +#define BCM_6348_USB_CNTL_RX_DMA_IRQ	(IRQ_INTERNAL_BASE + 14)
@@ -149,9 +156,33 @@
 +#define BCM_6348_USB_BULK_TX_DMA_IRQ	(IRQ_INTERNAL_BASE + 17)
 +#define BCM_6348_USB_ISO_RX_DMA_IRQ	(IRQ_INTERNAL_BASE + 18)
 +#define BCM_6348_USB_ISO_TX_DMA_IRQ	(IRQ_INTERNAL_BASE + 19)
+ #define BCM_6348_EHCI0_IRQ		0
  #define BCM_6348_ENET0_RXDMA_IRQ	(IRQ_INTERNAL_BASE + 20)
  #define BCM_6348_ENET0_TXDMA_IRQ	(IRQ_INTERNAL_BASE + 21)
- #define BCM_6348_ENET1_RXDMA_IRQ	(IRQ_INTERNAL_BASE + 22)
+@@ -604,6 +614,7 @@ enum bcm63xx_irq {
+ #define BCM_6358_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
+ #define BCM_6358_UART1_IRQ		(IRQ_INTERNAL_BASE + 3)
+ #define BCM_6358_DSL_IRQ		(IRQ_INTERNAL_BASE + 29)
++#define BCM_6358_UDC0_IRQ		0
+ #define BCM_6358_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
+ #define BCM_6358_ENET1_IRQ		(IRQ_INTERNAL_BASE + 6)
+ #define BCM_6358_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 9)
+@@ -643,6 +654,7 @@ enum bcm63xx_irq {
+ #define BCM_6368_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
+ #define BCM_6368_UART1_IRQ		(IRQ_INTERNAL_BASE + 3)
+ #define BCM_6368_DSL_IRQ		(IRQ_INTERNAL_BASE + 4)
++#define BCM_6368_UDC0_IRQ		0
+ #define BCM_6368_ENET0_IRQ		0
+ #define BCM_6368_ENET1_IRQ		0
+ #define BCM_6368_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 15)
+@@ -682,6 +694,7 @@ extern const int *bcm63xx_irqs;
+ 	[IRQ_UART0]		= BCM_## __cpu ##_UART0_IRQ,		\
+ 	[IRQ_UART1]		= BCM_## __cpu ##_UART1_IRQ,		\
+ 	[IRQ_DSL]		= BCM_## __cpu ##_DSL_IRQ,		\
++	[IRQ_UDC0]		= BCM_## __cpu ##_UDC0_IRQ,		\
+ 	[IRQ_ENET0]		= BCM_## __cpu ##_ENET0_IRQ,		\
+ 	[IRQ_ENET1]		= BCM_## __cpu ##_ENET1_IRQ,		\
+ 	[IRQ_ENET_PHY]		= BCM_## __cpu ##_ENET_PHY_IRQ,		\
 --- /dev/null
 +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_dev_usb_udc.h
 @@ -0,0 +1,6 @@
@@ -183,7 +214,7 @@
  obj-y		+= boards/
 --- a/arch/mips/bcm63xx/clk.c
 +++ b/arch/mips/bcm63xx/clk.c
-@@ -141,6 +141,30 @@ static struct clk clk_usbh = {
+@@ -171,6 +171,30 @@ static struct clk clk_usbh = {
  };
  
  /*
@@ -214,7 +245,7 @@
   * SPI clock
   */
  static void spi_set(struct clk *clk, int enable)
-@@ -208,6 +232,8 @@ struct clk *clk_get(struct device *dev,
+@@ -270,6 +294,8 @@ struct clk *clk_get(struct device *dev,
  		return &clk_ephy;
  	if (!strcmp(id, "usbh"))
  		return &clk_usbh;
@@ -222,7 +253,7 @@
 +		return &clk_usbs;
  	if (!strcmp(id, "spi"))
  		return &clk_spi;
- 	if (!strcmp(id, "periph"))
+ 	if (!strcmp(id, "xtm"))
 --- a/arch/mips/bcm63xx/Kconfig
 +++ b/arch/mips/bcm63xx/Kconfig
 @@ -7,6 +7,7 @@ config BCM63XX_CPU_6338

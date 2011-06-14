@@ -29,9 +29,9 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 +	select USB_ARCH_HAS_OHCI
 +	select USB_OHCI_BIG_ENDIAN_DESC
 +	select USB_OHCI_BIG_ENDIAN_MMIO
- endmenu
  
- source "arch/mips/bcm63xx/boards/Kconfig"
+ config BCM63XX_CPU_6368
+ 	bool "support 6368 CPU"
 --- a/arch/mips/bcm63xx/Makefile
 +++ b/arch/mips/bcm63xx/Makefile
 @@ -1,5 +1,6 @@

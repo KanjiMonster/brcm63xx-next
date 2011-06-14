@@ -1,4 +1,3 @@
-Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 ---
  drivers/usb/host/ehci-bcm63xx.c |  154 +++++++++++++++++++++++++++++++++++++++
  drivers/usb/host/ehci-hcd.c     |    5 +
@@ -82,17 +81,17 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 +	if (!res_mem || irq < 0)
 +		return -ENODEV;
 +
-+	reg = bcm_rset_readl(RSET_USBH_PRIV, USBH_PRIV_SWAP_REG);
++	reg = bcm_rset_readl(RSET_USBH_PRIV, USBH_PRIV_SWAP_6358_REG);
 +	reg &= ~USBH_PRIV_SWAP_EHCI_DATA_MASK;
 +	reg |= USBH_PRIV_SWAP_EHCI_ENDN_MASK;
-+	bcm_rset_writel(RSET_USBH_PRIV, reg, USBH_PRIV_SWAP_REG);
++	bcm_rset_writel(RSET_USBH_PRIV, reg, USBH_PRIV_SWAP_6358_REG);
 +
 +	/*
 +	 * The magic value comes for the original vendor BSP and is
 +	 * needed for USB to work. Datasheet does not help, so the
 +	 * magic value is used as-is.
 +	 */
-+	bcm_rset_writel(RSET_USBH_PRIV, 0x1c0020, USBH_PRIV_TEST_REG);
++	bcm_rset_writel(RSET_USBH_PRIV, 0x1c0020, USBH_PRIV_TEST_6358_REG);
 +
 +	hcd = usb_create_hcd(&ehci_bcm63xx_hc_driver, &pdev->dev, "bcm63xx");
 +	if (!hcd)
