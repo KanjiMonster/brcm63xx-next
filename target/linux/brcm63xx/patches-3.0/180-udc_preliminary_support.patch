@@ -17,7 +17,7 @@
  };
  
  static struct board_info __initdata board_rta1025w_16 = {
-@@ -921,6 +924,9 @@ int __init board_register_devices(void)
+@@ -923,6 +926,9 @@ int __init board_register_devices(void)
  	if (board.has_dsp)
  		bcm63xx_dsp_register(&board.dsp);
  
@@ -90,7 +90,7 @@
 +}
 --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
 +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
-@@ -163,7 +163,7 @@ enum bcm63xx_regs_set {
+@@ -221,7 +221,7 @@ enum bcm63xx_regs_set {
  #define BCM_6338_GPIO_BASE		(0xfffe0400)
  #define BCM_6338_SPI_BASE		(0xfffe0c00)
  #define BCM_6338_SPI2_BASE		(0xdeadbeef)
@@ -99,7 +99,7 @@
  #define BCM_6338_USBDMA_BASE		(0xfffe2400)
  #define BCM_6338_OHCI0_BASE		(0xdeadbeef)
  #define BCM_6338_OHCI_PRIV_BASE		(0xfffe3000)
-@@ -208,7 +208,7 @@ enum bcm63xx_regs_set {
+@@ -267,7 +267,7 @@ enum bcm63xx_regs_set {
  #define BCM_6345_GPIO_BASE		(0xfffe0400)
  #define BCM_6345_SPI_BASE		(0xdeadbeef)
  #define BCM_6345_SPI2_BASE		(0xdeadbeef)
@@ -108,7 +108,7 @@
  #define BCM_6345_USBDMA_BASE		(0xfffe2800)
  #define BCM_6345_ENET0_BASE		(0xfffe1800)
  #define BCM_6345_ENETDMA_BASE		(0xfffe2800)
-@@ -293,7 +293,7 @@ enum bcm63xx_regs_set {
+@@ -354,7 +354,7 @@ enum bcm63xx_regs_set {
  #define BCM_6358_GPIO_BASE		(0xfffe0080)
  #define BCM_6358_SPI_BASE		(0xdeadbeef)
  #define BCM_6358_SPI2_BASE		(0xfffe0800)
@@ -117,7 +117,7 @@
  #define BCM_6358_OHCI0_BASE		(0xfffe1400)
  #define BCM_6358_OHCI_PRIV_BASE		(0xdeadbeef)
  #define BCM_6358_USBH_PRIV_BASE		(0xfffe1500)
-@@ -483,6 +483,7 @@ enum bcm63xx_irq {
+@@ -551,6 +551,7 @@ enum bcm63xx_irq {
  	IRQ_UART0,
  	IRQ_UART1,
  	IRQ_DSL,
@@ -125,7 +125,7 @@
  	IRQ_ENET0,
  	IRQ_ENET1,
  	IRQ_ENET_PHY,
-@@ -514,6 +515,7 @@ enum bcm63xx_irq {
+@@ -623,6 +624,7 @@ enum bcm63xx_irq {
  #define BCM_6338_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
  #define BCM_6338_UART1_IRQ		0
  #define BCM_6338_DSL_IRQ		(IRQ_INTERNAL_BASE + 5)
@@ -133,7 +133,7 @@
  #define BCM_6338_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
  #define BCM_6338_ENET1_IRQ		0
  #define BCM_6338_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 9)
-@@ -544,6 +546,7 @@ enum bcm63xx_irq {
+@@ -653,6 +655,7 @@ enum bcm63xx_irq {
  #define BCM_6345_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
  #define BCM_6345_UART1_IRQ		0
  #define BCM_6345_DSL_IRQ		(IRQ_INTERNAL_BASE + 3)
@@ -141,7 +141,7 @@
  #define BCM_6345_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
  #define BCM_6345_ENET1_IRQ		0
  #define BCM_6345_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 12)
-@@ -574,10 +577,17 @@ enum bcm63xx_irq {
+@@ -683,10 +686,17 @@ enum bcm63xx_irq {
  #define BCM_6348_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
  #define BCM_6348_UART1_IRQ		0
  #define BCM_6348_DSL_IRQ		(IRQ_INTERNAL_BASE + 4)
@@ -159,7 +159,7 @@
  #define BCM_6348_EHCI0_IRQ		0
  #define BCM_6348_ENET0_RXDMA_IRQ	(IRQ_INTERNAL_BASE + 20)
  #define BCM_6348_ENET0_TXDMA_IRQ	(IRQ_INTERNAL_BASE + 21)
-@@ -604,6 +614,7 @@ enum bcm63xx_irq {
+@@ -713,6 +723,7 @@ enum bcm63xx_irq {
  #define BCM_6358_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
  #define BCM_6358_UART1_IRQ		(IRQ_INTERNAL_BASE + 3)
  #define BCM_6358_DSL_IRQ		(IRQ_INTERNAL_BASE + 29)
@@ -167,7 +167,7 @@
  #define BCM_6358_ENET0_IRQ		(IRQ_INTERNAL_BASE + 8)
  #define BCM_6358_ENET1_IRQ		(IRQ_INTERNAL_BASE + 6)
  #define BCM_6358_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 9)
-@@ -643,6 +654,7 @@ enum bcm63xx_irq {
+@@ -752,6 +763,7 @@ enum bcm63xx_irq {
  #define BCM_6368_UART0_IRQ		(IRQ_INTERNAL_BASE + 2)
  #define BCM_6368_UART1_IRQ		(IRQ_INTERNAL_BASE + 3)
  #define BCM_6368_DSL_IRQ		(IRQ_INTERNAL_BASE + 4)
@@ -175,7 +175,7 @@
  #define BCM_6368_ENET0_IRQ		0
  #define BCM_6368_ENET1_IRQ		0
  #define BCM_6368_ENET_PHY_IRQ		(IRQ_INTERNAL_BASE + 15)
-@@ -682,6 +694,7 @@ extern const int *bcm63xx_irqs;
+@@ -791,6 +803,7 @@ extern const int *bcm63xx_irqs;
  	[IRQ_UART0]		= BCM_## __cpu ##_UART0_IRQ,		\
  	[IRQ_UART1]		= BCM_## __cpu ##_UART1_IRQ,		\
  	[IRQ_DSL]		= BCM_## __cpu ##_DSL_IRQ,		\
@@ -256,7 +256,7 @@
  	if (!strcmp(id, "xtm"))
 --- a/arch/mips/bcm63xx/Kconfig
 +++ b/arch/mips/bcm63xx/Kconfig
-@@ -7,6 +7,7 @@ config BCM63XX_CPU_6338
+@@ -11,6 +11,7 @@ config BCM63XX_CPU_6338
  	select USB_ARCH_HAS_OHCI
  	select USB_OHCI_BIG_ENDIAN_DESC
  	select USB_OHCI_BIG_ENDIAN_MMIO
@@ -264,7 +264,7 @@
  
  config BCM63XX_CPU_6345
  	bool "support 6345 CPU"
-@@ -19,6 +20,7 @@ config BCM63XX_CPU_6348
+@@ -23,6 +24,7 @@ config BCM63XX_CPU_6348
  	select USB_ARCH_HAS_OHCI
  	select USB_OHCI_BIG_ENDIAN_DESC
  	select USB_OHCI_BIG_ENDIAN_MMIO

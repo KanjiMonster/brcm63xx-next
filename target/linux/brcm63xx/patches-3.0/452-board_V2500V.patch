@@ -72,7 +72,7 @@
  #endif
  
  #ifdef CONFIG_BCM63XX_CPU_6358
-@@ -2068,6 +2126,22 @@ void __init board_prom_init(void)
+@@ -2070,6 +2128,22 @@ void __init board_prom_init(void)
  		val &= MPI_CSBASE_BASE_MASK;
  	}
  	boot_addr = (u8 *)KSEG1ADDR(val);
@@ -95,7 +95,7 @@
  
  	/* dump cfe version */
  	cfe = boot_addr + BCM963XX_CFE_VERSION_OFFSET;
-@@ -2276,6 +2350,14 @@ int __init board_register_devices(void)
+@@ -2280,6 +2354,14 @@ int __init board_register_devices(void)
  		val = bcm_mpi_readl(MPI_CSBASE_REG(0));
  		val &= MPI_CSBASE_BASE_MASK;
  	}

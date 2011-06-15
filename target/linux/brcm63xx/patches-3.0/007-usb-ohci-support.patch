@@ -15,7 +15,7 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 
 --- a/arch/mips/bcm63xx/Kconfig
 +++ b/arch/mips/bcm63xx/Kconfig
-@@ -16,10 +16,16 @@ config BCM63XX_CPU_6345
+@@ -20,10 +20,16 @@ config BCM63XX_CPU_6345
  config BCM63XX_CPU_6348
  	bool "support 6348 CPU"
  	select HW_HAS_PCI
@@ -52,7 +52,7 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
  #include <board_bcm963xx.h>
  
  #define PFX	"board_bcm963xx: "
-@@ -889,6 +890,9 @@ int __init board_register_devices(void)
+@@ -891,6 +892,9 @@ int __init board_register_devices(void)
  	    !board_get_mac_address(board.enet1.mac_addr))
  		bcm63xx_enet_register(1, &board.enet1);
  

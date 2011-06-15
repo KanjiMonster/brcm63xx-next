@@ -1,0 +1,38 @@
+From 61a353b6b4c6fce8ed9131da68ef929425f2a3fd Mon Sep 17 00:00:00 2001
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Tue, 14 Jun 2011 21:14:39 +0200
+Subject: [PATCH 30/30] bcm63xx: Add 96328avng board info
+
+---
+ arch/mips/bcm63xx/boards/board_bcm963xx.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -59,6 +59,16 @@ static struct board_info board;
+ char nvram_buf[NVRAM_SPACE];
+ EXPORT_SYMBOL(nvram_buf);
+ 
++
++#ifdef CONFIG_BCM63XX_CPU_6328
++static struct board_info __initdata board_96328avng = {
++	.name				= "96328avng",
++	.expected_cpu_id		= 0x6328,
++
++	.has_uart0			= 1,
++};
++#endif
++
+ /*
+  * known 6338 boards
+  */
+@@ -2042,6 +2052,9 @@ static struct board_info __initdata boar
+  * all boards
+  */
+ static const struct board_info __initdata *bcm963xx_boards[] = {
++#ifdef CONFIG_BCM63XX_CPU_6328
++	&board_96328avng,
++#endif
+ #ifdef CONFIG_BCM63XX_CPU_6338
+ 	&board_96338gw,
+ 	&board_96338w,

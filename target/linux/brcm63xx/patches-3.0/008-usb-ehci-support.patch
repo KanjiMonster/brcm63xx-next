@@ -15,7 +15,7 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
 
 --- a/arch/mips/bcm63xx/Kconfig
 +++ b/arch/mips/bcm63xx/Kconfig
-@@ -26,6 +26,8 @@ config BCM63XX_CPU_6358
+@@ -30,6 +30,8 @@ config BCM63XX_CPU_6358
  	select USB_ARCH_HAS_OHCI
  	select USB_OHCI_BIG_ENDIAN_DESC
  	select USB_OHCI_BIG_ENDIAN_MMIO
@@ -44,7 +44,7 @@ Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
  #include <board_bcm963xx.h>
  
  #define PFX	"board_bcm963xx: "
-@@ -890,6 +891,9 @@ int __init board_register_devices(void)
+@@ -892,6 +893,9 @@ int __init board_register_devices(void)
  	    !board_get_mac_address(board.enet1.mac_addr))
  		bcm63xx_enet_register(1, &board.enet1);
  
