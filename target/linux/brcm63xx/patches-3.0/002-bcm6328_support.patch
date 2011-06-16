@@ -11,10 +11,11 @@ Subject: [PATCH 12/30] MIPS: BCM63XX: Add support for bcm6328 CPU
  arch/mips/bcm63xx/irq.c                           |   16 +++
  arch/mips/bcm63xx/prom.c                          |    4 +-
  arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h  |  109 +++++++++++++++++++++
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_gpio.h |    2 +
  arch/mips/include/asm/mach-bcm63xx/bcm63xx_io.h   |    2 +
  arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h |   50 ++++++++++
  arch/mips/include/asm/mach-bcm63xx/ioremap.h      |    1 +
- 10 files changed, 238 insertions(+), 4 deletions(-)
+ 11 files changed, 240 insertions(+), 4 deletions(-)
 
 --- a/arch/mips/bcm63xx/Kconfig
 +++ b/arch/mips/bcm63xx/Kconfig
@@ -393,6 +394,17 @@ Subject: [PATCH 12/30] MIPS: BCM63XX: Add support for bcm6328 CPU
   * 6338 irqs
   */
  #define BCM_6338_TIMER_IRQ		(IRQ_INTERNAL_BASE + 0)
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_gpio.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_gpio.h
+@@ -8,6 +8,8 @@ int __init bcm63xx_gpio_init(void);
+ static inline unsigned long bcm63xx_gpio_count(void)
+ {
+ 	switch (bcm63xx_get_cpu_id()) {
++	case BCM6328_CPU_ID:
++		return 32;
+ 	case BCM6358_CPU_ID:
+ 		return 40;
+ 	case BCM6338_CPU_ID:
 --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_io.h
 +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_io.h
 @@ -91,5 +91,7 @@
