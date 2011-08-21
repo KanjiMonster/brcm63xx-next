@@ -1,0 +1,154 @@
+--- a/drivers/net/bcm63xx_enet.c
++++ b/drivers/net/bcm63xx_enet.c
+@@ -834,10 +834,8 @@ static int bcm_enet_open(struct net_devi
+ 	struct bcm_enet_priv *priv;
+ 	struct sockaddr addr;
+ 	struct device *kdev;
+-	struct phy_device *phydev;
+ 	int i, ret;
+ 	unsigned int size;
+-	char phy_id[MII_BUS_ID_SIZE + 3];
+ 	void *p;
+ 	u32 val;
+ 
+@@ -845,40 +843,10 @@ static int bcm_enet_open(struct net_devi
+ 	kdev = &priv->pdev->dev;
+ 
+ 	if (priv->has_phy) {
+-		/* connect to PHY */
+-		snprintf(phy_id, sizeof(phy_id), PHY_ID_FMT,
+-			 priv->mac_id ? "1" : "0", priv->phy_id);
+-
+-		phydev = phy_connect(dev, phy_id, bcm_enet_adjust_phy_link, 0,
+-				     PHY_INTERFACE_MODE_MII);
+-
+-		if (IS_ERR(phydev)) {
+-			dev_err(kdev, "could not attach to PHY\n");
+-			return PTR_ERR(phydev);
+-		}
+-
+-		/* mask with MAC supported features */
+-		phydev->supported &= (SUPPORTED_10baseT_Half |
+-				      SUPPORTED_10baseT_Full |
+-				      SUPPORTED_100baseT_Half |
+-				      SUPPORTED_100baseT_Full |
+-				      SUPPORTED_Autoneg |
+-				      SUPPORTED_Pause |
+-				      SUPPORTED_MII);
+-		phydev->advertising = phydev->supported;
+-
+-		if (priv->pause_auto && priv->pause_rx && priv->pause_tx)
+-			phydev->advertising |= SUPPORTED_Pause;
+-		else
+-			phydev->advertising &= ~SUPPORTED_Pause;
+-
+-		dev_info(kdev, "attached PHY at address %d [%s]\n",
+-			 phydev->addr, phydev->drv->name);
+-
++		/* Reset state */
+ 		priv->old_link = 0;
+ 		priv->old_duplex = -1;
+ 		priv->old_pause = -1;
+-		priv->phydev = phydev;
+ 	}
+ 
+ 	/* mask all interrupts and request them */
+@@ -893,7 +861,7 @@ static int bcm_enet_open(struct net_devi
+ 
+ 	ret = request_irq(dev->irq, bcm_enet_isr_mac, 0, dev->name, dev);
+ 	if (ret)
+-		goto out_phy_disconnect;
++		return ret;
+ 
+ 	ret = request_irq(priv->irq_rx, bcm_enet_isr_dma, IRQF_DISABLED,
+ 			  dev->name, dev);
+@@ -1140,9 +1108,6 @@ out_freeirq_rx:
+ out_freeirq:
+ 	free_irq(dev->irq, dev);
+ 
+-out_phy_disconnect:
+-	phy_disconnect(priv->phydev);
+-
+ 	return ret;
+ }
+ 
+@@ -1258,12 +1223,6 @@ static int bcm_enet_stop(struct net_devi
+ 	free_irq(priv->irq_rx, dev);
+ 	free_irq(dev->irq, dev);
+ 
+-	/* release phy */
+-	if (priv->has_phy) {
+-		phy_disconnect(priv->phydev);
+-		priv->phydev = NULL;
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -1846,6 +1805,8 @@ static int __devinit bcm_enet_probe(stru
+ 
+ 	/* MII bus registration */
+ 	if (priv->has_phy) {
++		struct phy_device *phydev;
++		char phy_id[MII_BUS_ID_SIZE + 3];
+ 
+ 		priv->mii_bus = mdiobus_alloc();
+ 		if (!priv->mii_bus) {
+@@ -1882,6 +1843,38 @@ static int __devinit bcm_enet_probe(stru
+ 			dev_err(&pdev->dev, "unable to register mdio bus\n");
+ 			goto out_free_mdio;
+ 		}
++
++		/* connect to PHY */
++		snprintf(phy_id, sizeof(phy_id), PHY_ID_FMT,
++			 priv->mac_id ? "1" : "0", priv->phy_id);
++
++		phydev = phy_connect(dev, phy_id, bcm_enet_adjust_phy_link, 0,
++				     PHY_INTERFACE_MODE_MII);
++
++		if (IS_ERR(phydev)) {
++			dev_err(&pdev->dev, "could not attach to PHY\n");
++			goto out_unregister_mdio;
++		}
++
++		/* mask with MAC supported features */
++		phydev->supported &= (SUPPORTED_10baseT_Half |
++				      SUPPORTED_10baseT_Full |
++				      SUPPORTED_100baseT_Half |
++				      SUPPORTED_100baseT_Full |
++				      SUPPORTED_Autoneg |
++				      SUPPORTED_Pause |
++				      SUPPORTED_MII);
++		phydev->advertising = phydev->supported;
++
++		if (priv->pause_auto && priv->pause_rx && priv->pause_tx)
++			phydev->advertising |= SUPPORTED_Pause;
++		else
++			phydev->advertising &= ~SUPPORTED_Pause;
++
++		dev_info(&pdev->dev, "attached PHY at address %d [%s]\n",
++			 phydev->addr, phydev->drv->name);
++
++		priv->phydev = phydev;
+ 	} else {
+ 
+ 		/* run platform code to initialize PHY device */
+@@ -1927,6 +1920,9 @@ static int __devinit bcm_enet_probe(stru
+ 	return 0;
+ 
+ out_unregister_mdio:
++	if (priv->phydev)
++		phy_disconnect(priv->phydev);
++
+ 	if (priv->mii_bus) {
+ 		mdiobus_unregister(priv->mii_bus);
+ 		kfree(priv->mii_bus->irq);
+@@ -1977,6 +1973,8 @@ static int __devexit bcm_enet_remove(str
+ 	enet_writel(priv, 0, ENET_MIISC_REG);
+ 
+ 	if (priv->has_phy) {
++		phy_disconnect(priv->phydev);
++		priv->phydev = NULL;
+ 		mdiobus_unregister(priv->mii_bus);
+ 		kfree(priv->mii_bus->irq);
+ 		mdiobus_free(priv->mii_bus);
