@@ -23,7 +23,7 @@
  static struct bcm963xx_nvram nvram;
  static unsigned int mac_addr_used;
  static struct board_info board;
-@@ -780,6 +789,502 @@ static struct board_info __initdata boar
+@@ -808,6 +817,512 @@ static struct board_info __initdata boar
  
  	.has_ohci0			= 1,
  };
@@ -78,6 +78,8 @@
 +	},
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -173,6 +175,8 @@
 +	},
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -268,6 +272,8 @@
 +	},
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -361,6 +367,8 @@
 +	},
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -451,6 +459,8 @@
 +	},
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -526,7 +536,7 @@
  #endif
  
  /*
-@@ -810,9 +1315,30 @@ static const struct board_info __initdat
+@@ -838,9 +1353,30 @@ static const struct board_info __initdat
  	&board_96358vw2,
  	&board_AGPFS0,
  	&board_DWVS0,
@@ -557,7 +567,7 @@
  /*
   * Register a sane SPROMv2 to make the on-board
   * bcm4318 WLAN work
-@@ -953,6 +1479,9 @@ void __init board_prom_init(void)
+@@ -981,6 +1517,9 @@ void __init board_prom_init(void)
  		boardid_fixup(boot_addr);
  	}
  

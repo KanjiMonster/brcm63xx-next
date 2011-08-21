@@ -1,6 +1,6 @@
 --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
 +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -401,6 +401,62 @@ static struct board_info __initdata boar
+@@ -413,6 +413,64 @@ static struct board_info __initdata boar
  	},
  };
  
@@ -15,6 +15,8 @@
 +	.has_pci			= 1,
 +
 +	.enet1 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -63,7 +65,7 @@
  static struct board_info __initdata board_96348gw = {
  	.name				= "96348GW",
  	.expected_cpu_id		= 0x6348,
-@@ -1969,6 +2025,7 @@ static const struct board_info __initdat
+@@ -2024,6 +2082,7 @@ static const struct board_info __initdat
  	&board_spw500v,
  	&board_96348sv,
  	&board_V2500V_BB,

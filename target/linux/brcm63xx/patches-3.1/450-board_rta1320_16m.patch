@@ -1,6 +1,6 @@
 --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
 +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -178,6 +178,43 @@ static struct board_info __initdata boar
+@@ -184,6 +184,45 @@ static struct board_info __initdata boar
  		},
  	},
  };
@@ -13,6 +13,8 @@
 +	.has_enet0			= 1,
 +
 +	.enet0 = {
++		.has_phy		= 1,
++		.phy_id			= 0,
 +		.force_speed_100	= 1,
 +		.force_duplex_full	= 1,
 +	},
@@ -44,7 +46,7 @@
  #endif
  
  /*
-@@ -1789,6 +1826,7 @@ static const struct board_info __initdat
+@@ -1840,6 +1879,7 @@ static const struct board_info __initdat
  	&board_96338gw,
  	&board_96338w,
  	&board_96338w2_e7t,
