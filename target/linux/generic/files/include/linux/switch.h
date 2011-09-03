@@ -90,6 +90,13 @@ enum {
 	SWITCH_PORT_ATTR_MAX
 };
 
+/* port speed */
+enum {
+	SWITCH_PORT_SPEED_10M,
+	SWITCH_PORT_SPEED_100M,
+	SWITCH_PORT_SPEED_1000M,
+};
+
 #define SWITCH_ATTR_DEFAULTS_OFFSET	0x1000
 
 #ifdef __KERNEL__
@@ -99,6 +106,7 @@ struct switch_op;
 struct switch_val;
 struct switch_attr;
 struct switch_attrlist;
+struct switch_port_state;
 
 int register_switch(struct switch_dev *dev, struct net_device *netdev);
 void unregister_switch(struct switch_dev *dev);
@@ -129,6 +137,8 @@ struct switch_attrlist {
  * @get_port_pvid: get the primary VLAN ID of a port
  * @set_port_pvid: set the primary VLAN ID of a port
  *
+ * @get_port_link: get the current link information of a port
+ *
  * @apply_config: apply all changed settings to the switch
  * @reset_switch: resetting the switch
  */
@@ -140,6 +150,9 @@ struct switch_dev_ops {
 
 	int (*get_port_pvid)(struct switch_dev *dev, int port, int *val);
 	int (*set_port_pvid)(struct switch_dev *dev, int port, int val);
+
+	int (*get_port_link)(struct switch_dev *dev, int port,
+			      struct switch_port_state *state);
 
 	int (*apply_config)(struct switch_dev *dev);
 	int (*reset_switch)(struct switch_dev *dev);
@@ -166,6 +179,8 @@ struct switch_dev {
 
 	spinlock_t lock;
 	struct switch_port *portbuf;
+
+	char buf[80];
 };
 
 struct switch_port {
@@ -197,6 +212,15 @@ struct switch_attr {
 	int id;
 	int ofs;
 	int max;
+};
+
+struct switch_port_state {
+	int link:1;
+	int speed:2;
+	int duplex:1;
+
+	/* for drivers providing extra link info */
+	char extra[30];
 };
 
 #endif
