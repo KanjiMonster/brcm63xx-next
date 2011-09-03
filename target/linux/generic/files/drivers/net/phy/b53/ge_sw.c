@@ -32,9 +32,9 @@ static int b53_ge_get_port_link(struct b53_device *dev, int port, u8 *link,
 	speed_reg = b53_read32(dev, B53_STAT_PAGE, B53_SPEED_STAT);
 	duplex_reg = b53_read16(dev, B53_STAT_PAGE, B53_DUPLEX_STAT_GE);
 
-	*link = link_reg & (1 << port);
+	*link = (link_reg >> port) & 1;
 	*speed = SPEED_PORT_GE(speed_reg, port);
-	*duplex = duplex_reg & (1 << port);
+	*duplex = (duplex_reg >> port) & 1;
 
 	return 0;
 }

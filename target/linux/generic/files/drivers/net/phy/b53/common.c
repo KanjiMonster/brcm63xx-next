@@ -178,42 +178,25 @@ static int b53_set_vlan_ports(struct switch_dev *dev,
 	return 0;
 }
 
-static const char *b53_speed_string(int speed)
-{
-	switch (speed) {
-	case 0:
-		return "10baseT";
-	case 1:
-		return "100baseT";
-	case 2:
-		return "1000baseT";
-	default:
-		return "invalid";
-	}
-}
-
 static int b53_get_port_link(struct switch_dev *dev,
-			     const struct switch_attr *attr,
-			     struct switch_val *val)
+			     int port,
+			     struct switch_port_state *state)
 {
 	struct b53_device *priv = sw_to_b53(dev);
 	u8 link, speed, duplex;
 	int ret;
 
-	ret = priv->get_port_link(priv, val->port_vlan, &link, &speed,
-			       &duplex);
+	ret = priv->get_port_link(priv, port, &link, &speed, &duplex);
 	if (ret)
 		return ret;
-	if (link)
-		val->len = snprintf(priv->buf, sizeof(priv->buf),
-				    "port:%d link:up speed:%s %s-duplex",
-				    val->port_vlan, b53_speed_string(speed),
-				    duplex ? "full" : "half");
-	else
-		val->len = snprintf(priv->buf, sizeof(priv->buf),
-				    "port:%d link: down", val->port_vlan);
 
-	val->value.s = priv->buf;
+	if (link) {
+		state->link = 1;
+		state->speed = speed;
+		state->duplex = duplex;
+	} else {
+		state->link = 0;
+	}
 
 	return 0;
 }
@@ -279,14 +262,6 @@ static struct switch_attr b53_global_ops[] = {
 };
 
 static struct switch_attr b53_port_ops[] = {
-	{
-		.type = SWITCH_TYPE_STRING,
-		.name = "link",
-		.description = "Get port link information",
-		.max = 1,
-		.set = NULL,
-		.get = b53_get_port_link,
-	},
 };
 
 static struct switch_attr b53_vlan_ops[] = {
@@ -308,6 +283,7 @@ static const struct switch_dev_ops b53_switch_ops = {
 
 	.get_port_pvid = b53_get_port_pvid,
 	.set_port_pvid = b53_set_port_pvid,
+	.get_port_link = b53_get_port_link,
 	.get_vlan_ports = b53_get_vlan_ports,
 	.set_vlan_ports = b53_set_vlan_ports,
 	.apply_config = b53_apply_config,
