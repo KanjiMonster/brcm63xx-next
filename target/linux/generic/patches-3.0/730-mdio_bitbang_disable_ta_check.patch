@@ -1,0 +1,71 @@
+From 7f0601d4ea153605d5aafab5318b81e02cb2638c Mon Sep 17 00:00:00 2001
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Mon, 3 Oct 2011 20:58:14 +0200
+Subject: [PATCH] drivers: mdio-bitbang: mdio-gpio: add workaround for PHYs not driving TA low
+
+Some PHYs do not always drive TA low despite returning valid data. Allow
+ignoring the TA value if we know we are connected to one of these.
+---
+ drivers/net/phy/mdio-bitbang.c |    2 +-
+ drivers/net/phy/mdio-gpio.c    |    1 +
+ include/linux/mdio-bitbang.h   |    5 +++++
+ include/linux/mdio-gpio.h      |    2 ++
+ 4 files changed, 9 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/phy/mdio-bitbang.c b/drivers/net/phy/mdio-bitbang.c
+index 6539189..660e8b8 100644
+--- a/drivers/net/phy/mdio-bitbang.c
++++ b/drivers/net/phy/mdio-bitbang.c
+@@ -166,7 +166,7 @@ static int mdiobb_read(struct mii_bus *bus, int phy, int reg)
+ 	ctrl->ops->set_mdio_dir(ctrl, 0);
+ 
+ 	/* check the turnaround bit: the PHY should be driving it to zero */
+-	if (mdiobb_get_bit(ctrl) != 0) {
++	if (mdiobb_get_bit(ctrl) != 0 && !ctrl->ignore_ta_errors) {
+ 		/* PHY didn't drive TA low -- flush any bits it
+ 		 * may be trying to send.
+ 		 */
+diff --git a/drivers/net/phy/mdio-gpio.c b/drivers/net/phy/mdio-gpio.c
+index 47c8339a..4ec7f6d 100644
+--- a/drivers/net/phy/mdio-gpio.c
++++ b/drivers/net/phy/mdio-gpio.c
+@@ -94,6 +94,7 @@ static struct mii_bus * __devinit mdio_gpio_bus_init(struct device *dev,
+ 	if (!bitbang)
+ 		goto out;
+ 
++	bitbang->ctrl.ignore_ta_errors = pdata->ignore_ta_errors;
+ 	bitbang->ctrl.ops = &mdio_gpio_ops;
+ 	bitbang->mdc = pdata->mdc;
+ 	bitbang->mdio = pdata->mdio;
+diff --git a/include/linux/mdio-bitbang.h b/include/linux/mdio-bitbang.h
+index 8ea9a42..082cbdc 100644
+--- a/include/linux/mdio-bitbang.h
++++ b/include/linux/mdio-bitbang.h
+@@ -30,6 +30,11 @@ struct mdiobb_ops {
+ };
+ 
+ struct mdiobb_ctrl {
++	/* Some PHYs don't drive the TA low even though they completed
++	 * successfully.
++	 */
++	unsigned int ignore_ta_errors:1;
++
+ 	const struct mdiobb_ops *ops;
+ };
+ 
+diff --git a/include/linux/mdio-gpio.h b/include/linux/mdio-gpio.h
+index e9d3fdf..0e7e300 100644
+--- a/include/linux/mdio-gpio.h
++++ b/include/linux/mdio-gpio.h
+@@ -18,6 +18,8 @@ struct mdio_gpio_platform_data {
+ 	unsigned int mdc;
+ 	unsigned int mdio;
+ 
++	unsigned int ignore_ta_errors:1;
++
+ 	unsigned int phy_mask;
+ 	int irqs[PHY_MAX_ADDR];
+ };
+-- 
+1.7.2.5
+
