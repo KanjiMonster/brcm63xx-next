@@ -1,0 +1,100 @@
+From 6df8113304f831e2c93a95a755ce1b9867e6cfb3 Mon Sep 17 00:00:00 2001
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Sun, 6 Nov 2011 15:16:35 +0100
+Subject: [PATCH] staging: et131x: fix build failure with PM_SLEEP disabled
+
+The #ifdef CONFIG_PM_SLEEP for et131x_{suspend,resume} was also including
+all functions below it, resulting in the following build failure when
+PM_SLEEP is not enabled:
+
+  CC [M]  drivers/staging/et131x/et131x.o
+drivers/staging/et131x/et131x.c:5489:12: error: 'et131x_pci_setup' undeclared here (not in a function)
+drivers/staging/et131x/et131x.c:4022:12: warning: 'et131x_pci_init' defined but not used
+drivers/staging/et131x/et131x.c:4307:12: warning: 'et131x_mii_probe' defined but not used
+drivers/staging/et131x/et131x.c:4355:31: warning: 'et131x_adapter_init' defined but not used
+make[8]: *** [drivers/staging/et131x/et131x.o] Error 1
+
+Fix this by moving et131x_{suspend,resume} to the ET131X_PM_OPS definition.
+
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+---
+This patch is based on next-20111104 (which is identical to staging-next in
+regard to et131x.c).
+
+ drivers/staging/et131x/et131x.c |   58 +++++++++++++++++++-------------------
+ 1 files changed, 29 insertions(+), 29 deletions(-)
+
+--- a/drivers/staging/et131x/et131x.c
++++ b/drivers/staging/et131x/et131x.c
+@@ -4440,35 +4440,6 @@ void et131x_down(struct net_device *netd
+ 	et131x_disable_txrx(netdev);
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int et131x_suspend(struct device *dev)
+-{
+-	struct pci_dev *pdev = to_pci_dev(dev);
+-	struct net_device *netdev = pci_get_drvdata(pdev);
+-
+-	if (netif_running(netdev)) {
+-		netif_device_detach(netdev);
+-		et131x_down(netdev);
+-		pci_save_state(pdev);
+-	}
+-
+-	return 0;
+-}
+-
+-static int et131x_resume(struct device *dev)
+-{
+-	struct pci_dev *pdev = to_pci_dev(dev);
+-	struct net_device *netdev = pci_get_drvdata(pdev);
+-
+-	if (netif_running(netdev)) {
+-		pci_restore_state(pdev);
+-		et131x_up(netdev);
+-		netif_device_attach(netdev);
+-	}
+-
+-	return 0;
+-}
+-
+ /* ISR functions */
+ 
+ /**
+@@ -5470,6 +5441,35 @@ err_out:
+ 	return result;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int et131x_suspend(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct net_device *netdev = pci_get_drvdata(pdev);
++
++	if (netif_running(netdev)) {
++		netif_device_detach(netdev);
++		et131x_down(netdev);
++		pci_save_state(pdev);
++	}
++
++	return 0;
++}
++
++static int et131x_resume(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct net_device *netdev = pci_get_drvdata(pdev);
++
++	if (netif_running(netdev)) {
++		pci_restore_state(pdev);
++		et131x_up(netdev);
++		netif_device_attach(netdev);
++	}
++
++	return 0;
++}
++
+ static SIMPLE_DEV_PM_OPS(et131x_pm_ops, et131x_suspend, et131x_resume);
+ #define ET131X_PM_OPS (&et131x_pm_ops)
+ #else

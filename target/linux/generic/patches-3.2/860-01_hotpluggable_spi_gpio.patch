@@ -1,0 +1,26 @@
+Fix spi-gpio for hotplug.
+
+--mb
+
+
+
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -256,7 +256,7 @@ static void spi_gpio_cleanup(struct spi_
+ 	spi_bitbang_cleanup(spi);
+ }
+ 
+-static int __init spi_gpio_alloc(unsigned pin, const char *label, bool is_in)
++static int __devinit spi_gpio_alloc(unsigned pin, const char *label, bool is_in)
+ {
+ 	int value;
+ 
+@@ -270,7 +270,7 @@ static int __init spi_gpio_alloc(unsigne
+ 	return value;
+ }
+ 
+-static int __init
++static int __devinit
+ spi_gpio_request(struct spi_gpio_platform_data *pdata, const char *label,
+ 	u16 *res_flags)
+ {

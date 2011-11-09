@@ -1,0 +1,11 @@
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -3,7 +3,7 @@
+ #
+ 
+ menuconfig PHYLIB
+-	bool "PHY Device support and infrastructure"
++	tristate "PHY Device support and infrastructure"
+ 	depends on !S390
+ 	depends on NETDEVICES
+ 	help
