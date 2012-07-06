@@ -82,6 +82,9 @@ brcm63xx_detect() {
 		brcm63xx_has_reset_button="true"
 		ifname=eth0
 		;;
+	NB6)
+		ifname=eth0
+		;;
 	*)
 		;;
 	esac
